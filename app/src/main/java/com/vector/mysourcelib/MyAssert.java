@@ -2,7 +2,6 @@ package com.vector.mysourcelib;
 
 import android.os.Looper;
 
-import com.kugou.common.app.KGCommonApplication;
 
 import junit.framework.AssertionFailedError;
 import junit.framework.ComparisonFailure;
@@ -14,6 +13,12 @@ import junit.framework.ComparisonFailure;
  */
 public class MyAssert {
 
+	private static boolean isDebug = false;
+
+	public static void init(boolean debug){
+		isDebug = debug;
+	}
+
 	/**
 	 * Asserts that two booleans are equal.
 	 */
@@ -22,28 +27,18 @@ public class MyAssert {
 	}
 
 	static public void assertSubThread() {
-		if (KGLog.isDebug())
+		if (isDebug)
 			assertTrue(Looper.getMainLooper() != Looper.myLooper());
 	}
 
 	static public void assertMainThread() {
-		if (KGLog.isDebug())
+		if (isDebug)
 			assertTrue(Looper.getMainLooper() == Looper.myLooper());
 	}
 
 	static public void assertNotMainThread() {
-		if (KGLog.isDebug())
+		if (isDebug)
 			assertTrue(Looper.getMainLooper() != Looper.myLooper());
-	}
-
-	static public void assertForeProcess() {
-		if (KGLog.isDebug())
-			assertTrue(KGCommonApplication.isForeProcess());
-	}
-
-	static public void assertBackProcess() {
-		if (KGLog.isDebug())
-			assertTrue(KGCommonApplication.isSupportProcess());
 	}
 
 	/**
@@ -111,7 +106,7 @@ public class MyAssert {
 	 */
 	static public void assertEquals(String message, boolean expected,
 			boolean actual) {
-		if (!KGLog.isDebug())
+		if (!isDebug)
 			return;
 		assertEquals(message, Boolean.valueOf(expected), Boolean.valueOf(actual));
 	}
@@ -121,7 +116,7 @@ public class MyAssert {
 	 * is thrown with the given message.
 	 */
 	static public void assertEquals(String message, byte expected, byte actual) {
-		if (!KGLog.isDebug())
+		if (!isDebug)
 			return;
 		assertEquals(message, Byte.valueOf(expected), Byte.valueOf(actual));
 	}
@@ -131,7 +126,7 @@ public class MyAssert {
 	 * is thrown with the given message.
 	 */
 	static public void assertEquals(String message, char expected, char actual) {
-		if (!KGLog.isDebug())
+		if (!isDebug)
 			return;
 		assertEquals(message, Character.valueOf(expected), Character.valueOf(actual));
 	}
@@ -143,7 +138,7 @@ public class MyAssert {
 	 */
 	static public void assertEquals(String message, double expected,
 			double actual, double delta) {
-		if (!KGLog.isDebug())
+		if (!isDebug)
 			return;
 
 		// handle infinity specially since subtracting to infinite values gives
@@ -166,7 +161,7 @@ public class MyAssert {
 	 */
 	static public void assertEquals(String message, float expected,
 			float actual, float delta) {
-		if (!KGLog.isDebug())
+		if (!isDebug)
 			return;
 
 		// handle infinity specially since subtracting to infinite values gives
@@ -184,7 +179,7 @@ public class MyAssert {
 	 * is thrown with the given message.
 	 */
 	static public void assertEquals(String message, int expected, int actual) {
-		if (!KGLog.isDebug())
+		if (!isDebug)
 			return;
 		assertEquals(message, Integer.valueOf(expected), Integer.valueOf(actual));
 	}
@@ -194,7 +189,7 @@ public class MyAssert {
 	 * is thrown with the given message.
 	 */
 	static public void assertEquals(String message, long expected, long actual) {
-		if (!KGLog.isDebug())
+		if (!isDebug)
 			return;
 		assertEquals(message, Long.valueOf(expected), Long.valueOf(actual));
 	}
@@ -205,7 +200,7 @@ public class MyAssert {
 	 */
 	static public void assertEquals(String message, Object expected,
 			Object actual) {
-		if (!KGLog.isDebug())
+		if (!isDebug)
 			return;
 
 		if (expected == null && actual == null)
@@ -220,7 +215,7 @@ public class MyAssert {
 	 * AssertionFailedError is thrown with the given message.
 	 */
 	static public void assertEquals(String message, short expected, short actual) {
-		if (!KGLog.isDebug())
+		if (!isDebug)
 			return;
 		assertEquals(message, new Short(expected), new Short(actual));
 	}
@@ -237,7 +232,7 @@ public class MyAssert {
 	 */
 	static public void assertEquals(String message, String expected,
 			String actual) {
-		if (!KGLog.isDebug())
+		if (!isDebug)
 			return;
 
 		if (expected == null && actual == null)
@@ -358,21 +353,21 @@ public class MyAssert {
 	 * Fails a test with the given message.
 	 */
 	static public void fail(String message) {
-		if (KGLog.isDebug()) {
+		if (isDebug) {
 			throw new AssertionFailedError(message);
 		}
 	}
 
 	static private void failNotEquals(String message, Object expected,
 			Object actual) {
-		if (!KGLog.isDebug())
+		if (!isDebug)
 			return;
 		fail(format(message, expected, actual));
 	}
 
 	static private void failNotSame(String message, Object expected,
 			Object actual) {
-		if (!KGLog.isDebug())
+		if (!isDebug)
 			return;
 		String formatted = "";
 		if (message != null)
@@ -382,7 +377,7 @@ public class MyAssert {
 	}
 
 	static private void failSame(String message) {
-		if (!KGLog.isDebug())
+		if (!isDebug)
 			return;
 		String formatted = "";
 		if (message != null)
@@ -396,58 +391,6 @@ public class MyAssert {
 			formatted = message + " ";
 		return formatted + "expected:<" + expected + "> but was:<" + actual
 				+ ">";
-	}
-
-	static public void logFail() {
-		try {
-			fail();
-		} catch (AssertionFailedError e) {
-			KGLog.e("AssertionFailedError: ", e.getMessage());
-		}
-	}
-
-	static public void logFail(String message) {
-		try {
-			fail(message);
-		} catch (AssertionFailedError e) {
-			KGLog.e("AssertionFailedError: ", e.getMessage());
-		}
-	}
-
-	static public void logNotNull(Object object) {
-		if (!KGLog.isDebug())
-			return;
-		try {
-			assertNotNull(null, object);
-		} catch (AssertionFailedError e) {
-			KGLog.e("AssertionFailedError: ", e.getMessage());
-		}
-	}
-
-	static public void logNotNull(String message, Object object) {
-		if (!KGLog.isDebug())
-			return;
-		try {
-			assertTrue(message, object != null);
-		} catch (AssertionFailedError e) {
-			KGLog.e("AssertionFailedError: ", e.getMessage());
-		}
-	}
-
-	static public void logTrue(boolean condition) {
-		try {
-			assertTrue(condition);
-		} catch (AssertionFailedError e) {
-			KGLog.e("AssertionFailedError: ", e.getMessage());
-		}
-	}
-
-	static public void logTrue(String message, boolean condition) {
-		try {
-			assertTrue(message, condition);
-		} catch (AssertionFailedError e) {
-			KGLog.e("AssertionFailedError: ", e.getMessage());
-		}
 	}
 
 	protected MyAssert() {
