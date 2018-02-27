@@ -1,1 +1,2 @@
-include ':app'
+include ':app', ':commsource'
+//project(":commsource").projectDir = file("/Users/a545/develop/open_source/MySourceLib/commsource")
