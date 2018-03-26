@@ -7,6 +7,10 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.text.TextUtils;
+
+import java.io.File;
 
 /**
  * Created by vectorzeng on 2018/2/28.
@@ -15,6 +19,9 @@ import android.graphics.drawable.Drawable;
 public class BitmapUtil {
     private static final String TG = "vz-BitmapUtil";
 
+    private static Bitmap createEmptyBitmap(){
+        return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+    }
 
     /***
      * 拉伸图片到指定的宽高
@@ -90,5 +97,71 @@ public class BitmapUtil {
         }catch (OutOfMemoryError error){
             return null;
         }
+    }
+
+    /**
+     * 为QuickShortcut定制的方法。生成app-info的图标。
+     * 将back和front合并，并生成一个bitmap。
+     *
+     *
+     * 起点为右下脚，也就是front绘制在右下角
+     * @param back 背景
+     * @param front 前景
+     * @param ratioWidth = width(back)/width(front);
+     * @param ratioHeight = height(back)/width(front)
+     * @return
+     */
+    public static Bitmap mergeDrawableToBmpUnSafe(Drawable back, Drawable front, float ratioWidth, float ratioHeight){
+        if(back == null || front == null){
+            return null;
+        }
+
+        int wBack = back.getIntrinsicWidth();
+        int hBack = back.getIntrinsicHeight();
+        int wFront = (int) (wBack * ratioWidth);
+        int hFront = (int) (hBack * ratioHeight);
+        int width = wBack + wFront/4;
+        int height = hBack + hFront/4;
+        Bitmap result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(result);
+        back.setBounds(0, 0, wBack, hBack);
+        back.draw(canvas);
+
+        int l = width - wFront;
+        int t = height - hFront;
+        if(l < 0){
+            l = 0;
+        }
+        if(t < 0){
+            t = 0;
+        }
+        front.setBounds(l, t, width, height);
+        front.draw(canvas);
+        return result;
+    }
+
+
+    public static Bitmap decodeFile(Uri uri){
+        if(uri == null || !"file".equals(uri.getScheme())){
+            MyAssert.fail();
+            return null;
+        }
+        String path = uri.getPath();
+        if(TextUtils.isEmpty(path)){
+            MyAssert.fail();
+            return null;
+        }
+        File file = new File(path);
+        if(!file.exists()){
+            MyAssert.fail();
+            return null;
+        }
+        try {
+            Bitmap ret = BitmapFactory.decodeFile(file.getAbsolutePath());
+            return ret;
+        }catch (OutOfMemoryError oom){
+            oom.printStackTrace();
+        }
+        return null;
     }
 }
