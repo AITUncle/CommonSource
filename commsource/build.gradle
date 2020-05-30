@@ -21,6 +21,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        abortOnError false
+    }
 
 }
 
@@ -29,4 +32,23 @@ dependencies {
 
     implementation 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.google.code.gson:gson:2.8.2'
+}
+
+
+//jcenter 配置
+apply plugin: 'com.novoda.bintray-release'
+
+publish {
+
+    def groupProjectID = 'com.ituncle'
+    def artifactProjectID = 'commonsource'
+    def publishVersionID = '0.0.1'
+
+    userOrg = 'vectorzeng'
+    repoName = 'maven'
+    groupId = groupProjectID
+    artifactId = artifactProjectID
+    publishVersion = publishVersionID
+    desc = 'android开发工具类'
+    website = 'https://github.com/AITUncle/CommonSource'
 }
