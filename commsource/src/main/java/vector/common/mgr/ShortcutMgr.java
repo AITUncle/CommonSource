@@ -1,16 +1,17 @@
 package vector.common.mgr;
 
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.os.Build;
+import android.support.annotation.NonNull;
 
-import vector.common.R;
-import vector.common.util.BitmapUtil;
 
 /**
  * Created by vectorzeng on 2018/2/28.
@@ -18,6 +19,9 @@ import vector.common.util.BitmapUtil;
 
 public class ShortcutMgr {
     private static final ShortcutMgr ourInstance = new ShortcutMgr();
+
+    private int widthDefaultIcon = 0;
+    private int heightDefaultIcon = 0;
 
     public static ShortcutMgr getInstance() {
         return ourInstance;
@@ -74,5 +78,40 @@ public class ShortcutMgr {
             installIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, resIcon);
         }
         context.sendBroadcast(installIntent);
+    }
+
+    private boolean initDefaultIconSize(@NonNull Context context) {
+        if (widthDefaultIcon > 0 && heightDefaultIcon > 0){
+            return true;
+        }
+        PackageManager pm = context.getPackageManager();
+        if (pm == null) {
+            return false;
+        }
+        ApplicationInfo info = context.getApplicationInfo();
+        if (info == null) {
+            return false;
+        }
+        Drawable drawable = info.loadIcon(pm);
+        if (drawable == null) {
+            return false;
+        }
+        widthDefaultIcon = drawable.getIntrinsicWidth();
+        heightDefaultIcon = drawable.getIntrinsicHeight();
+        return true;
+    }
+
+    public int getWidthDefaultIcon(@NonNull Context context) {
+        if (initDefaultIconSize(context)){
+            return widthDefaultIcon;
+        }
+        return 192;
+    }
+
+    public int getHeightDefaultIcon(@NonNull Context context) {
+        if (initDefaultIconSize(context)){
+            return heightDefaultIcon;
+        }
+        return 192;
     }
 }

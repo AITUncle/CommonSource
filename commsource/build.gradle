@@ -35,20 +35,20 @@ dependencies {
 }
 
 
-//jcenter 配置
-apply plugin: 'com.novoda.bintray-release'
-
-publish {
-
-    def groupProjectID = 'com.ituncle'
-    def artifactProjectID = 'commonsource'
-    def publishVersionID = '0.0.1'
-
-    userOrg = 'vectorzeng'
-    repoName = 'maven'
-    groupId = groupProjectID
-    artifactId = artifactProjectID
-    publishVersion = publishVersionID
-    desc = 'android开发工具类'
-    website = 'https://github.com/AITUncle/CommonSource'
-}
+////jcenter 配置
+//apply plugin: 'com.novoda.bintray-release'
+//
+//publish {
+//
+//    def groupProjectID = 'com.ituncle'
+//    def artifactProjectID = 'commonsource'
+//    def publishVersionID = '0.0.1'
+//
+//    userOrg = 'vectorzeng'
+//    repoName = 'maven'
+//    groupId = groupProjectID
+//    artifactId = artifactProjectID
+//    publishVersion = publishVersionID
+//    desc = 'android开发工具类'
+//    website = 'https://github.com/AITUncle/CommonSource'
+//}

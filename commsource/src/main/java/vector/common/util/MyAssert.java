@@ -2,8 +2,6 @@ package vector.common.util;
 
 import android.os.Looper;
 
-import junit.framework.AssertionFailedError;
-import junit.framework.ComparisonFailure;
 
 /**
  * 断言类
@@ -239,8 +237,8 @@ public class MyAssert {
             return;
         if (expected != null && expected.equals(actual))
             return;
-
-        throw new ComparisonFailure(message, expected, actual);
+        throw new AssertionError("" + message
+                + ",expected=" + expected + "actual=" + actual);
     }
 
     /**
@@ -354,7 +352,7 @@ public class MyAssert {
      */
     public static void fail(String message) {
         if (isDebug) {
-            throw new AssertionFailedError(message);
+            throw new AssertionError(message);
         }
     }
 
