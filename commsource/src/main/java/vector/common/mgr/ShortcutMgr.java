@@ -10,7 +10,9 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.os.Build;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
+
+import vector.common.util.MyLog;
 
 
 /**
@@ -18,6 +20,7 @@ import android.support.annotation.NonNull;
  */
 
 public class ShortcutMgr {
+    private static final String TG = "ShortcutMgr";
     private static final ShortcutMgr ourInstance = new ShortcutMgr();
 
     private int widthDefaultIcon = 0;
@@ -38,7 +41,7 @@ public class ShortcutMgr {
         return installIntent;
     }
 
-    public void installShortcut(Intent intent, String name, Bitmap icon, Context context){
+    public boolean installShortcut(Intent intent, String name, Bitmap icon, Context context){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             ShortcutManager shortcutManager =
                     context.getSystemService(ShortcutManager.class);
@@ -48,16 +51,18 @@ public class ShortcutMgr {
                         .setShortLabel(name)
                         .setIntent(intent)
                         .build();
-                shortcutManager.requestPinShortcut(pinShortcutInfo, null);
+                return shortcutManager.requestPinShortcut(pinShortcutInfo, null);
             }
-            return;
+            return false;
         }
         Intent installIntent = createInstallIntent(intent, name);
         installIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON, icon);
         context.sendBroadcast(installIntent);
+        return true;
     }
 
-    public void installShortcut(Intent intent, String name, int icon, Context context){
+    public boolean installShortcut(Intent intent, String name, int icon, Context context){
+        MyLog.i(TG, "installShortcut name=" + name + ", intent=" + intent);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             ShortcutManager shortcutManager =
                     context.getSystemService(ShortcutManager.class);
@@ -67,9 +72,9 @@ public class ShortcutMgr {
                         .setShortLabel(name)
                         .setIntent(intent)
                         .build();
-                shortcutManager.requestPinShortcut(pinShortcutInfo, null);
+                return shortcutManager.requestPinShortcut(pinShortcutInfo, null);
             }
-            return;
+            return false;
         }
 
         Intent installIntent = createInstallIntent(intent, name);
@@ -78,6 +83,7 @@ public class ShortcutMgr {
             installIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, resIcon);
         }
         context.sendBroadcast(installIntent);
+        return true;
     }
 
     private boolean initDefaultIconSize(@NonNull Context context) {

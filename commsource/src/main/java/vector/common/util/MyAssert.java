@@ -1,6 +1,7 @@
 package vector.common.util;
 
 import android.os.Looper;
+import android.text.TextUtils;
 
 
 /**
@@ -262,6 +263,12 @@ public class MyAssert {
      */
     public static void assertNotNull(Object object) {
         assertNotNull(null, object);
+    }
+
+    public static void assertNotEmpty(String str){
+        if (TextUtils.isEmpty(str)){
+            fail("empty str=" + str);
+        }
     }
 
     /**
